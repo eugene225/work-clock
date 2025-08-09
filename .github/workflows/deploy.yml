@@ -24,6 +24,5 @@ jobs:
             git pull origin main
             echo "${{ secrets.ENV_FILE }}" > .env
             npm install --production
+            npm run build
             npm start
-
-
