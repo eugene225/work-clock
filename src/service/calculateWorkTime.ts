@@ -1,35 +1,34 @@
 import { WorkRecord, WorkTimeResult } from '../types/index.js';
-import { WorkLocation } from '../types/index';
 
 export function calculateMonthlyWorkTime(records: WorkRecord[]): WorkTimeResult {
   let totalMinutes = 0;
-  const missingDates: string[] = [];
+  let countDate = 0;
 
   for (const record of records) {
-    const { date, checkIn, checkOut, workAt } = record;
-    
-    // 재택 근무일은 무조건 8시간 (480분)
-    if (workAt === '재택') {
-      totalMinutes += 480;
-      continue;
+    const recordDate = new Date(record.date);
+    if(recordDate > new Date()) {
+      break;
     }
     
-    // 출퇴근 기록이 없는 경우 누락으로 처리
-    if (!checkIn || !checkOut) {
-      missingDates.push(date);
-      continue;
-    }
-    
-    // 사무실 근무일은 실제 출퇴근 시간으로 계산
-    const start = new Date(`1970-01-01T${checkIn}:00`);
-    const end = new Date(`1970-01-01T${checkOut}:00`);
-    let minutes = (end.getTime() - start.getTime()) / 60000 - 60; // 점심시간 제외
-    totalMinutes += minutes;
+    // HH:MM 형식을 분 단위로 변환
+    const [hours, minutes] = record.totalTime.split(':').map(Number);
+    totalMinutes += hours * 60 + minutes;
+    countDate++;
   }
+
+  // 총 해야 되는 근무시간 (센 날짜 * 8시간)
+  const requiredMinutes = countDate * 8 * 60; // 8시간 = 480분
+  const actualMinutes = totalMinutes;
+  const differenceMinutes = actualMinutes - requiredMinutes;
 
   return {
     totalHours: Math.floor(totalMinutes / 60),
     remainingMinutes: Math.round(totalMinutes % 60),
-    missingDates
+    countDate,
+    requiredHours: Math.floor(requiredMinutes / 60),
+    requiredMinutes: requiredMinutes % 60,
+    differenceHours: Math.floor(differenceMinutes / 60),
+    differenceMinutes: Math.round(differenceMinutes % 60),
+    isOverTime: differenceMinutes > 0
   };
 } 

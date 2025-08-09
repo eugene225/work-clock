@@ -91,9 +91,13 @@ app.view('login_form', async ({ ack, view, client, body }) => {
 
   if (success && records) {
     const result = calculateMonthlyWorkTime(records);
+    const differenceText = result.isOverTime 
+      ? `+${result.differenceHours}시간 ${result.differenceMinutes}분 초과`
+      : `${Math.abs(result.differenceHours)}시간 ${Math.abs(result.differenceMinutes)}분 부족`;
+    
     await client.chat.postMessage({
       channel: body.user.id,
-      text: `🕒 이번 달 총 근무 시간: ${result.totalHours}시간 ${result.remainingMinutes}분\n❗출퇴근 기록 누락: ${result.missingDates.length > 0 ? result.missingDates.join(', ') : '없음'}`
+      text: `🕒 이번 달 근무 현황:\n• 총 근무 시간: ${result.totalHours}시간 ${result.remainingMinutes}분\n• 필요 근무 시간: ${result.requiredHours}시간 ${result.requiredMinutes}분\n• 차이: ${differenceText}`
     });
   }
 });
