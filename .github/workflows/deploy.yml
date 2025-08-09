@@ -23,6 +23,7 @@ jobs:
             cd /home/ubuntu/work-clock
             git pull origin main
             echo "${{ secrets.ENV_FILE }}" > .env
-            npm install --production
+            npm install
             npm run build
-            npm start
+            pm2 restart work-clock || pm2 start npm --name work-clock -- start
+
