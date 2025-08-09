@@ -21,9 +21,9 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           script: |
             cd /home/ubuntu/work-clock
-            # .env 파일을 EC2로 복사 (scp 또는 echo)
-            echo "${{ secrets.ENV_FILE }}" > .env
             git pull origin main
+            echo "${{ secrets.ENV_FILE }}" > .env
             npm install --production
             npm start
+
 
