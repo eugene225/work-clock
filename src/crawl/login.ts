@@ -29,7 +29,7 @@ export async function fetchWorkRecords(email: string, password: string): Promise
     }
 
     // 출퇴근 기록 페이지로 이동
-    const targetUrl = 'https://cowave.ncpworkplace.com/user/commute-status';
+    const targetUrl = 'https://cowave.ncpworkplace.com/user/work-statistics';
     await page.goto(targetUrl, { waitUntil: 'networkidle2' });
 
     // 기간 선택 (1개월)
@@ -63,13 +63,10 @@ export async function fetchWorkRecords(email: string, password: string): Promise
 
         const getText = (index: number): string => tds[index]?.textContent?.trim() || '';
 
-        const workAtText = getText(3);
+        const totalTimeIdx = tds.length - 1;
         return {
           date: getText(0),
-          checkIn: extractTime(tds[1]),
-          checkOut: extractTime(tds[2]),
-          workAt: ['사무실', '재택'].includes(workAtText) ? workAtText as '사무실' | '재택' : null,
-          breakTime: extractTime(tds[4]),
+          totalTime: extractTime(tds[totalTimeIdx]) || '00:00',
         };
       });
     });
