@@ -5,7 +5,7 @@ import { calculateMonthlyWorkTime } from './service/calculateWorkTime.js';
 import { validateEnvVars, validateEmail, validatePassword } from './utils/validation.js';
 import { logger } from './utils/logger.js';
 
-dotenv.config();
+dotenv.config({ path: '../.env' });
 
 // 환경 변수 검증
 const requiredEnvVars = validateEnvVars({
