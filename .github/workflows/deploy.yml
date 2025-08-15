@@ -1,39 +1,21 @@
-name: Deploy to EC2
+name: Deploy Slack Bot
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      # 1. 깃허브 코드 체크아웃
-      - uses: actions/checkout@v3
-
-      # 2. EC2 서버에 SSH 접속 후 배포
-      - name: Deploy to EC2
+      - name: SSH to EC2 and run script
         uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_KEY }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # 프로젝트 디렉터리 이동
             cd /home/ubuntu/work-clock
-
-            # 최신 코드 가져오기
             git pull origin main
-
-            # .env 파일 덮어쓰기
-            echo "${{ secrets.ENV_FILE }}" > .env
-
-            # Node 패키지 설치 및 빌드
-            npm install
-            npm run build
-
-            # pm2 재시작, 없으면 새로 시작 (node 직접 실행)
-            pm2 restart work-clock || pm2 start dist/app.js --name work-clock
-
-            # pm2 상태 확인
-            pm2 list
+            ./start_bot.sh
