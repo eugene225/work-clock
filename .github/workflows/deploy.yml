@@ -14,8 +14,13 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
-          key: ${{ secrets.EC2_SSH_KEY }}
+          key: ${{ secrets.EC2_KEY }}
           script: |
             cd /home/ubuntu/work-clock
             git pull origin main
+            
+            echo "${{ secrets.ENV_FILE }}" > .env
+            echo ".env 파일 생성 완료"
+
+            # 봇 실행
             ./start_bot.sh
