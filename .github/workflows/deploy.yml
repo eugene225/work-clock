@@ -21,6 +21,9 @@ jobs:
             
             echo "${{ secrets.ENV_FILE }}" > .env
             echo ".env 파일 생성 완료"
+            
+            # 실행 권한 부여
+            chmod +x start_bot.sh
 
             # 봇 실행
-            /home/ubuntu/work-clock/start-bot.sh
+            ./start_bot.sh
