@@ -30,7 +30,7 @@ jobs:
             npm run build
 
             # pm2로 앱 재시작, 없으면 새로 시작
-            pm2 restart work-clock || pm2 start dist/app.js --name work-clock --cwd /home/ubuntu/work-clock
+            pm2 restart work-clock || pm2 start dist/app.js --name work-clock
 
             # 실행 확인
             pm2 logs work-clock --lines 20
