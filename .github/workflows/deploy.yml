@@ -23,4 +23,4 @@ jobs:
             echo ".env 파일 생성 완료"
 
             # 봇 실행
-            ./start_bot.sh
+            /home/ubuntu/work-clock/start_bot.sh
