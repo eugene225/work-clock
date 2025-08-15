@@ -9,9 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
-      - name: Create .env file
-        run: echo "${{ secrets.ENV_FILE }}" > .env
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v0.1.7
@@ -21,9 +18,20 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           script: |
             cd /home/ubuntu/work-clock
+
+            # Git pull
             git pull origin main
+
+            # EC2에서 .env 생성 (Secrets에서 ENV_FILE에 multiline 내용 저장)
             echo "${{ secrets.ENV_FILE }}" > .env
+
+            # Node 패키지 설치 & 빌드
             npm install
             npm run build
-            pm2 restart work-clock || pm2 start npm --name work-clock -- start
 
+            # pm2로 앱 재시작, 없으면 새로 시작
+            pm2 restart work-clock --cwd /home/ubuntu/work-clock || \
+            pm2 start npm --name work-clock -- start --cwd /home/ubuntu/work-clock
+
+            # 실행 확인
+            pm2 logs work-clock --lines 20
