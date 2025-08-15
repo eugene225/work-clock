@@ -4,8 +4,9 @@ import { fetchWorkRecords } from './crawl/login.js';
 import { calculateMonthlyWorkTime } from './service/calculateWorkTime.js';
 import { validateEnvVars, validateEmail, validatePassword } from './utils/validation.js';
 import { logger } from './utils/logger.js';
+import path from 'path';
 
-dotenv.config({ path: '../.env' });
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
 // 환경 변수 검증
 const requiredEnvVars = validateEnvVars({
