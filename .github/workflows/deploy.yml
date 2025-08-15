@@ -8,8 +8,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      # 1. 깃허브 코드 체크아웃
       - uses: actions/checkout@v3
 
+      # 2. EC2 서버에 SSH 접속 후 배포
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v0.1.7
         with:
@@ -17,20 +19,21 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_KEY }}
           script: |
+            # 프로젝트 디렉터리 이동
             cd /home/ubuntu/work-clock
 
-            # Git pull
+            # 최신 코드 가져오기
             git pull origin main
 
-            # EC2에서 .env 생성 (Secrets에서 ENV_FILE에 multiline 내용 저장)
+            # .env 파일 덮어쓰기
             echo "${{ secrets.ENV_FILE }}" > .env
 
-            # Node 패키지 설치 & 빌드
+            # Node 패키지 설치 및 빌드
             npm install
             npm run build
 
-            # pm2로 앱 재시작, 없으면 새로 시작
+            # pm2 재시작, 없으면 새로 시작 (node 직접 실행)
             pm2 restart work-clock || pm2 start dist/app.js --name work-clock
 
-            # 실행 확인
-            pm2 logs work-clock --lines 20
+            # pm2 상태 확인
+            pm2 list
