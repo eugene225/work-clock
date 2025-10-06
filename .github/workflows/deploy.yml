@@ -36,8 +36,14 @@ jobs:
         port: 22
         script: |
           cd /home/ubuntu/work-clock
+
+          cat <<EOT > .env
+          ${{ secrets.ENV_FILE }}
+          EOT
+
           npm install
           npm run build
+
           pm2 restart work-clock --update-env || pm2 start npm --name work-clock -- start
           pm2 save
 
