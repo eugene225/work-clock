@@ -19,6 +19,7 @@ const { App } = pkg;
 const app = new App({
   signingSecret: requiredEnvVars.SLACK_SIGNING_SECRET!,
   token: requiredEnvVars.SLACK_BOT_TOKEN!,
+  endpoints: '/slack/events',
 });
 
 // 로그인 모달 열기
