@@ -37,5 +37,6 @@ jobs:
         script: |
           cd /home/ubuntu/work-clock
           npm install
-          pm2 restart work-clock || pm2 start index.js --name work-clock
+          pm2 restart work-clock --update-env || pm2 start app.js --name work-clock --update-env
           pm2 save
+
