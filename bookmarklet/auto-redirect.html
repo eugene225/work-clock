@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>근무시간 계산기 - 자동 이동</title>
+    <style>
+        body {
+            font-family: -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+        .install-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 50px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 40px 0;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        .install-box p {
+            color: white;
+            margin-bottom: 25px;
+            font-size: 1.3em;
+            font-weight: 500;
+        }
+        .bookmarklet {
+            display: inline-block;
+            padding: 20px 45px;
+            background: white;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 1.4em;
+            cursor: move;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+        }
+        .bookmarklet:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        }
+        .feature {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+        .feature h3 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .highlight {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border: 3px solid #4CAF50;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+        }
+        .highlight h3 {
+            color: #2e7d32;
+            margin-top: 0;
+        }
+        code {
+            background: #ffe082;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Monaco', monospace;
+            color: #d84315;
+        }
+        ul {
+            line-height: 2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🕒 근무시간 계산기</h1>
+        <p class="subtitle">어디서나 클릭 한 번으로 자동 이동 & 계산</p>
+
+        <div class="install-box">
+            <p>👇 이 버튼을 북마크바로 드래그하세요</p>
+            <a id="bookmarklet" href="#" class="bookmarklet">🕒 근무시간 계산기</a>
+        </div>
+
+        <div class="highlight">
+            <h3>✨ 새로운 기능: 자동 페이지 이동</h3>
+            <p><strong>어느 페이지에서든</strong> 북마크를 클릭하면:</p>
+            <ol style="font-size: 1.1em;">
+                <li>Workplace 페이지가 아니면 확인 창이 나타납니다</li>
+                <li>"확인"을 누르면 자동으로 Workplace 페이지로 이동</li>
+                <li>Workplace 페이지에 있으면 바로 근무 시간 계산!</li>
+            </ol>
+        </div>
+
+        <div class="feature">
+            <h3>📊 계산되는 정보</h3>
+            <ul>
+                <li><strong>총 근무일</strong>: 이번 달 전체 근무일 (dayTpCd == 'WORK')</li>
+                <li><strong>오늘까지 근무한 시간</strong>: 실제로 일한 시간</li>
+                <li><strong>앞으로 근무해야 하는 시간</strong>: 총 근무일 × 8h - 근무 시간</li>
+                <li><strong>현재 초과/부족</strong>: 오늘 기준 초과/부족 시간</li>
+                <li><strong>오늘 포함 여부</strong>: 오늘 근무시간 자동 감지</li>
+            </ul>
+        </div>
+
+        <div class="feature">
+            <h3>⌨️ Shift 키로 empId 변경</h3>
+            <p>Shift 키를 누른 채로 북마크를 클릭하면 empId를 다시 입력할 수 있습니다.</p>
+            <p style="color: #999; font-size: 0.9em;">💡 다른 페이지에서 Shift+클릭해도 상태가 유지됩니다!</p>
+        </div>
+
+        <div class="feature">
+            <h3>🚀 사용 방법</h3>
+            <ol style="line-height: 2;">
+                <li>위의 버튼을 북마크바로 드래그</li>
+                <li><strong>어느 페이지에서든</strong> 북마크 클릭</li>
+                <li>Workplace 페이지가 아니면 자동 이동</li>
+                <li>근무 시간 계산 결과 확인!</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        const bookmarkletCode = `javascript:(function(){const targetUrl='https://workplace.worksmobile.com/my-space/work-statistics',isWorkplacePage=window.location.href.includes('workplace.worksmobile.com/my-space/work-statistics');if(!isWorkplacePage){const confirmMove=confirm('Workplace%20%ED%8E%98%EC%9D%B4%EC%A7%80%EB%A1%9C%20%EC%9D%B4%EB%8F%99%ED%95%A9%EB%8B%88%EB%8B%A4.%5Cn%5Cn%EC%9D%B4%EB%8F%99%20%ED%9B%84%20%EB%B6%81%EB%A7%88%ED%81%AC%EB%A5%BC%20%EB%8B%A4%EC%8B%9C%20%ED%81%B4%EB%A6%AD%ED%95%B4%EC%A3%BC%EC%84%B8%EC%9A%94.');if(confirmMove){if(window.event&&window.event.shiftKey)sessionStorage.setItem('workClockShiftKey','true');window.location.href=targetUrl}return}const shiftKeyPressed=sessionStorage.getItem('workClockShiftKey')==='true';sessionStorage.removeItem('workClockShiftKey');const now=new Date(),year=now.getFullYear(),month=String(now.getMonth()+1).padStart(2,'0'),fromDate=year+month+'01',lastDay=new Date(year,now.getMonth()+1,0).getDate(),toDate=year+month+String(lastDay).padStart(2,'0');if(window.event&&window.event.shiftKey||shiftKeyPressed){localStorage.removeItem('work_clock_empId');alert('%E2%9C%85%20empId%EA%B0%80%20%EC%B4%88%EA%B8%B0%ED%99%94%EB%90%98%EC%97%88%EC%8A%B5%EB%8B%88%EB%8B%A4.%5Cn%EC%83%88%EB%A1%9C%EC%9A%B4%20empId%EB%A5%BC%20%EC%9E%85%EB%A0%A5%ED%95%B4%EC%A3%BC%EC%84%B8%EC%9A%94.')}const urlParams=new URLSearchParams(window.location.search);let empId=urlParams.get('empId')||localStorage.getItem('work_clock_empId');if(!empId){const empIdInput=document.querySelector('input[name=%22empId%22]');if(empIdInput)empId=empIdInput.value}if(!empId){empId=prompt('%F0%9F%93%9D%20empId%EB%A5%BC%20%EC%9E%85%EB%A0%A5%ED%95%98%EC%84%B8%EC%9A%94%5Cn%5Cn%F0%9F%92%A1%20%ED%8C%81%3A%20Shift%20%ED%82%A4%EB%A5%BC%20%EB%88%84%EB%A5%B4%EA%B3%A0%20%EB%B6%81%EB%A7%88%ED%81%AC%EB%A6%BF%EC%9D%84%20%ED%81%B4%EB%A6%AD%ED%95%98%EB%A9%B4%20empId%EB%A5%BC%20%EB%B3%80%EA%B2%BD%ED%95%A0%20%EC%88%98%20%EC%9E%88%EC%8A%B5%EB%8B%88%EB%8B%A4.');if(!empId){alert('%E2%9D%8C%20empId%EA%B0%80%20%ED%95%84%EC%9A%94%ED%95%A9%EB%8B%88%EB%8B%A4.');return}}localStorage.setItem('work_clock_empId',empId);const apiUrl='https://workplace.worksmobile.com/my-space/work-statistics/list?fromDate='+fromDate+'&toDate='+toDate+'&empId='+empId+'&chkWorkingDay=Y&_='+Date.now(),loadingDiv=document.createElement('div');loadingDiv.id='work-clock-loading';loadingDiv.style.cssText='position:fixed;top:50%25;left:50%25;transform:translate(-50%25,-50%25);background:white;padding:30px;border-radius:10px;box-shadow:0%204px%206px%20rgba(0,0,0,0.1);z-index:10000;font-family:sans-serif';loadingDiv.innerHTML='%3Cdiv%20style=%22text-align:center%22%3E%E2%8F%B3%20%EA%B7%BC%EB%AC%B4%20%EA%B8%B0%EB%A1%9D%EC%9D%84%20%EB%B6%88%EB%9F%AC%EC%98%A4%EB%8A%94%20%EC%A4%91...%3C/div%3E';document.body.appendChild(loadingDiv);fetch(apiUrl).then(r=>{if(!r.ok)throw new Error('HTTP%20error!%20status:%20'+r.status);return r.json()}).then(data=>{console.log('API Response:',data);if(!data.data||!data.data.list)throw new Error('%EC%98%88%EC%83%81%EC%B9%98%20%EB%AA%BB%ED%95%9C%20%EC%9D%91%EB%8B%B5%20%ED%98%95%EC%8B%9D%EC%9E%85%EB%8B%88%EB%8B%A4.');let records=data.data.list;console.log('Sample record:',records.find(r=>r.sumWorkTime&&r.sumWorkTime!=='0000'));const today=new Date();today.setHours(0,0,0,0);let workedMinutes=0,totalWorkDays=0,pastWorkDays=0,workedToday=false;records.forEach(record=>{if(record.dayTpCd!=='WORK')return;totalWorkDays++;const recordDate=new Date(record.checkYmd.substring(0,4),parseInt(record.checkYmd.substring(4,6))-1,parseInt(record.checkYmd.substring(6,8)));if(recordDate<=today){pastWorkDays++;const workTime=record.sumWorkTime;if(workTime&&workTime!=='0000'){const hours=parseInt(workTime.substring(0,2),10),minutes=parseInt(workTime.substring(2,4),10);if(!isNaN(hours)&&!isNaN(minutes)){workedMinutes+=hours*60+minutes;if(recordDate.getTime()===today.getTime())workedToday=true}}}});const shouldHaveWorked=pastWorkDays*8*60,totalRequiredMinutes=totalWorkDays*8*60,shouldWorkMore=totalRequiredMinutes-workedMinutes,differenceMinutes=workedMinutes-shouldHaveWorked,todayStatus=workedToday?'%EC%98%A4%EB%8A%98%20%ED%8F%AC%ED%95%A8':'%EC%98%A4%EB%8A%98%20%EC%A0%9C%EC%99%B8',remainingWorkDays=totalWorkDays-pastWorkDays,workedHours=Math.floor(workedMinutes/60),workedMins=workedMinutes%2560,shouldWorkMoreHours=Math.floor(shouldWorkMore/60),shouldWorkMoreMins=shouldWorkMore%2560,diffHours=Math.floor(Math.abs(differenceMinutes)/60),diffMins=Math.abs(differenceMinutes)%2560,isOverTime=differenceMinutes>0,differenceText=isOverTime?'%3Cspan%20style=%22color:%20%234CAF50;%20font-weight:%20bold;%22%3E+'+diffHours+'%EC%8B%9C%EA%B0%84%20'+diffMins+'%EB%B6%84%20%EC%B4%88%EA%B3%BC%20%E2%9C%A8%3C/span%3E':'%3Cspan%20style=%22color:%20%23f44336;%20font-weight:%20bold;%22%3E'+diffHours+'%EC%8B%9C%EA%B0%84%20'+diffMins+'%EB%B6%84%20%EB%B6%80%EC%A1%B1%20%E2%9A%A0%EF%B8%8F%3C/span%3E';loadingDiv.innerHTML='%3Cdiv%20style=%22min-width:350px%22%3E%3Ch2%20style=%22margin:0%200%2020px%200;color:%23333;text-align:center;border-bottom:2px%20solid%20%234CAF50;padding-bottom:10px%22%3E%F0%9F%95%92%20'+year+'%EB%85%84%20'+month+'%EC%9B%94%20%EA%B7%BC%EB%AC%B4%20%ED%98%84%ED%99%A9%3C/h2%3E%3Cdiv%20style=%22line-height:2;color:%23555%22%3E%3Cdiv%20style=%22background:%23f5f5f5;padding:10px;border-radius:5px;margin-bottom:10px%22%3E%3Cdiv%20style=%22font-size:0.9em;color:%23999;margin-bottom:5px%22%3E%F0%9F%93%85%20%EC%B4%9D%20%EA%B7%BC%EB%AC%B4%EC%9D%BC%3C/div%3E%3Cdiv%20style=%22font-size:1.2em%22%3E%3Cstrong%3E'+totalWorkDays+'%EC%9D%BC%3C/strong%3E%20(%EC%A7%80%EB%82%9C%20'+pastWorkDays+'%EC%9D%BC%20+%20%EB%82%A8%EC%9D%80%20'+remainingWorkDays+'%EC%9D%BC)%3C/div%3E%3C/div%3E%3Cdiv%20style=%22background:%23e3f2fd;padding:10px;border-radius:5px;margin-bottom:10px%22%3E%3Cdiv%20style=%22font-size:0.9em;color:%231976D2;margin-bottom:5px%22%3E%E2%9C%85%20%EC%98%A4%EB%8A%98%EA%B9%8C%EC%A7%80%20%EA%B7%BC%EB%AC%B4%ED%95%9C%20%EC%8B%9C%EA%B0%84%3C/div%3E%3Cdiv%20style=%22font-size:1.3em;color:%231976D2%22%3E%3Cstrong%3E'+workedHours+'%EC%8B%9C%EA%B0%84%20'+workedMins+'%EB%B6%84%3C/strong%3E%3C/div%3E%3C/div%3E%3Cdiv%20style=%22background:%23fff3e0;padding:10px;border-radius:5px;margin-bottom:10px%22%3E%3Cdiv%20style=%22font-size:0.9em;color:%23e65100;margin-bottom:5px%22%3E%F0%9F%93%8B%20%EC%95%9E%EC%9C%BC%EB%A1%9C%20%EA%B7%BC%EB%AC%B4%ED%95%B4%EC%95%BC%20%ED%95%98%EB%8A%94%20%EC%8B%9C%EA%B0%84%3C/div%3E%3Cdiv%20style=%22font-size:1.3em;color:%23e65100%22%3E%3Cstrong%3E'+shouldWorkMoreHours+'%EC%8B%9C%EA%B0%84%20'+shouldWorkMoreMins+'%EB%B6%84%3C/strong%3E%3C/div%3E%3Cdiv%20style=%22font-size:0.85em;color:%23999;margin-top:5px%22%3E%EC%B4%9D%20'+totalWorkDays+'%EC%9D%BC%20%C3%97%208h%20-%20%EA%B7%BC%EB%AC%B4%20'+workedHours+'h%20'+workedMins+'m%3Cbr%3E%F0%9F%92%A1%20'+todayStatus+'%3C/div%3E%3C/div%3E%3Cdiv%20style=%22background:'+(isOverTime?'%23e8f5e9':'%23ffebee')+';padding:15px;border-radius:5px;border:2px%20solid%20'+(isOverTime?'%234CAF50':'%23f44336')+'%22%3E%3Cdiv%20style=%22font-size:0.9em;color:%23666;margin-bottom:5px%22%3E%E2%9A%96%EF%B8%8F%20%ED%98%84%EC%9E%AC%20%EC%B4%88%EA%B3%BC/%EB%B6%80%EC%A1%B1%3C/div%3E%3Cdiv%20style=%22font-size:1.4em%22%3E'+differenceText+'%3C/div%3E%3Cdiv%20style=%22font-size:0.85em;color:%23999;margin-top:5px%22%3E%EA%B7%BC%EB%AC%B4%20'+workedHours+'h%20'+workedMins+'m%20-%20%ED%95%84%EC%9A%94%20'+Math.floor(shouldHaveWorked/60)+'h%20'+(shouldHaveWorked%2560)+'m%3C/div%3E%3C/div%3E%3C/div%3E%3Cbutton%20id=%22work-clock-close%22%20style=%22margin-top:20px;width:100%25;padding:12px;background:linear-gradient(135deg,%23667eea%200%25,%23764ba2%20100%25);color:white;border:none;border-radius:8px;cursor:pointer;font-size:16px;font-weight:bold%22%3E%EB%8B%AB%EA%B8%B0%3C/button%3E%3C/div%3E';document.getElementById('work-clock-close').addEventListener('click',()=>document.body.removeChild(loadingDiv))}).catch(err=>{console.error('Error:',err);loadingDiv.innerHTML='%3Cdiv%20style=%22color:red%22%3E%3Ch3%3E%E2%9D%8C%20%EC%98%A4%EB%A5%98%20%EB%B0%9C%EC%83%9D%3C/h3%3E%3Cp%3E'+err.message+'%3C/p%3E%3Cp%20style=%22font-size:0.9em;color:%23666%22%3E%EA%B0%9C%EB%B0%9C%EC%9E%90%20%EC%BD%98%EC%86%94(F12)%EC%9D%84%20%ED%99%95%EC%9D%B8%ED%95%98%EC%84%B8%EC%9A%94.%3C/p%3E%3Cbutton%20onclick=%22this.parentElement.parentElement.remove()%22%20style=%22margin-top:10px;padding:10px%2020px;background:%23f44336;color:white;border:none;border-radius:5px;cursor:pointer%22%3E%EB%8B%AB%EA%B8%B0%3C/button%3E%3C/div%3E'})})();`;
+        document.getElementById('bookmarklet').href = bookmarkletCode;
+    </script>
+</body>
+</html>
